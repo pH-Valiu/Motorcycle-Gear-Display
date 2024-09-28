@@ -27,6 +27,5 @@ void loop(){
   Serial.print("velocity: ");Serial.print(vel);Serial.print("\t");
   Serial.print("revolution: ");Serial.print(rpm);Serial.print("\t");
   Serial.print("gear: ");Serial.print(gear);Serial.println("\t");
-  delay(500);
 
 }
