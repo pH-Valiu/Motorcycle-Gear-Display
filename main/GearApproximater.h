@@ -2,6 +2,7 @@
 #define GEAR_APPROXIMATER_H
 
 #include "Arduino.h"
+#include "float.h"
 
 class GearApproximater {
 public:

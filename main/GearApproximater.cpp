@@ -1,7 +1,4 @@
-#include "Arduino.h"
-#include "float.h"
 #include "GearApproximater.h"
-
 
 GearApproximater::GearApproximater( const TireSpecs* tireSpecs, const MotoSpecs* motoSpecs )
     : m_tireSpecs(tireSpecs), m_motoSpecs(motoSpecs) {
