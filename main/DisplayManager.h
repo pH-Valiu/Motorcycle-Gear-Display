@@ -4,30 +4,29 @@
 #include "Arduino.h"
 
 /**
-* This class handles the communication with the 74HC595 to display digits at the LCD
+* This class handles the communication with the seven segment LCD
 *
 * Please call its constructor during the stup() phase on the Arduino
-*
-* Also, please make sure that the outputEnablePin is PWM
 */
 class DisplayManager{
+  public:
+    // The struct for passing the pin numbers of the leds to the constructor
+    struct Pins{
+      int pinA;
+      int pinB;
+      int pinC;
+      int pinD;
+      int pinE;
+      int pinF;
+      int pinG;
+      int pinDP;
+    };
+  
   private:
-    // connect to the ST_CP of 74HC595 (latch pin)
-    const int latchPin;
-
-    // connect to the SH_CP of 74HC595 (clock pin)
-    const int clockPin;
-
-    // connect to the DS of 74HC595 (data pin)
-    const int dataPin;
-
-    // connect to the OE of 74HC595 (output enable pin).
-    const int outputEnablePin;
 
     // define the LED digit patterns, from 0 - 9
     // 1 = LED on, 0 = LED off, in this order:
-    //                74HC595 pin     Q0,Q1,Q2,Q3,Q4,Q5,Q6,Q7 
-    //                Mapping to      a,b,c,d,e,f,g of Seven-Segment LED
+    //                Mapping to      a,b,c,d,e,f,g,dp of Seven-Segment LED
     const byte digits[10] = { B11111100,  // = 0
                               B01100000,  // = 1
                               B11011010,  // = 2
@@ -37,19 +36,26 @@ class DisplayManager{
                               B10111110,  // = 6
                               B11100000,  // = 7
                               B11111110,  // = 8
-                              B11100110   // = 9
+                              B11110110   // = 9
                              };
 
-    // last shown digit (needed for point display)
-    byte lastShownDigit;
+    // The actual internal storage of the pin numbers in mostly reverse order:
+    // {pinG, pinF, pinE, pinD, pinC, pinB, pinA, pinDP}
+    const int pinOut[8];
+
+    // last shown digit (needed for efficient displaying)
+    byte lastShownDigit = 0;
+
+    // whether the point is on (neeeded for efficient displaying)
+    bool isPointOn = 0;
 
   public:
+    
     /**
     * Constructor has to be called during setup() stage of Arduino
-    * @param outputEnablePin this has to be a PWM pin
+    * @param pinOut this has to be a fully initialized Pins struct
     */
-    DisplayManager(const int& latchPin, const int& clockPin, const int& dataPin, const int& outputEnablePin);
-    
+    DisplayManager(const Pins& pinOut);
     /**
     * Display the digit on the 74HC595
     * @param digit the digit to display: 0 to 9
@@ -61,19 +67,15 @@ class DisplayManager{
     * @param show whether or not to show it
     */
     void showPoint(const bool& show);
-
-    /**
-    * Set the brightness of the display
-    * @param brightness value between 0 (out) and 255 (full illumination)
-    */
-    void setBrightness(const int& brightness);
-  
-  private:
-  /**
-  * Writes the byte in LSBFIRST orientation onto the 74HC595
-  * @param b the byte to write (LSBFIRST)
-  */
-  void writeByte(byte b);
 };
+
+/**
+* Helper method to create Pins struct for default layout
+* 
+* Default is:
+*
+* pinA = 2, pinB = 3, pinC = 4, pinD = 5, pinE = 6, pinF = 7, pinG = 8, pinDP = 9
+*/
+DisplayManager::Pins createPinOut();
 
 #endif

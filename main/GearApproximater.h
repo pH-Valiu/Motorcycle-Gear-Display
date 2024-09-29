@@ -65,12 +65,24 @@ private:
     * Calculate the formula constant.
     * 
     * It derivates from the actual formula, see README.md
+    * @param none, but the m_tireSpecs and the m_motoSpecs attribute have to be initialized
+    * @return the formula constant
     */
     float calculateFormulaConstant() const;
 };
 
-// Function declarations
+/**
+* Helper method to create default TireSpecs based on Honda CB500FA (2017) 
+*
+* Rear tire is 160/60 ZR 17
+* @return GearApproximater::TireSpecs* newly on heap allocated TireSpecs pointer
+*/
 GearApproximater::TireSpecs* createTireSpecs();
+
+/**
+* Helper method to create default MotoSpecs based on Honda CB500FA (2017)
+* @return GearApproximater::MotoSpecs* newly on heap allocated MotoSpecs pointer
+*/
 GearApproximater::MotoSpecs* createMotoSpecs();
 
 #endif

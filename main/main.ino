@@ -4,33 +4,21 @@
 #define velocityPin A0
 #define revolutionPin A5
 
-#define displayLatchPin 2
-#define displayClockPin 3
-#define displayDataPin 4
-#define displayOutputEnablePin 5
-
 GearApproximater* gearApproximater;
 DisplayManager* displayManager;
 
-int lastGear = 0;
 
 
 void setup(){
   pinMode(velocityPin, INPUT);
   pinMode(revolutionPin, INPUT);
-  pinMode(displayLatchPin, OUTPUT);
-  pinMode(displayClockPin, OUTPUT);
-  pinMode(displayDataPin, OUTPUT);
-  pinMode(displayOutputEnablePin, OUTPUT);
-
   Serial.begin(9600);
 
   // Initialize GearApproximater
   gearApproximater = new GearApproximater(createTireSpecs(), createMotoSpecs());
 
   // Initialize DisplayManager
-  displayManager = new DisplayManager(displayLatchPin, displayClockPin, displayDataPin, displayOutputEnablePin);
-  displayManager->setBrightness(200);
+  displayManager = new DisplayManager(createPinOut());
   displayManager->showDigit(0);
   displayManager->showPoint(false);
 }
@@ -44,19 +32,18 @@ void loop(){
 
   int gear = gearApproximater->approximateGear(rpm, vel);
 
-  if (lastGear != gear){
-    lastGear = gear;
-    Serial.println("Showing");
-    displayManager->showDigit(gear);
-    //if /rpm > 3500): displayManager->showPoint(true) else false;
-    
+  displayManager->showDigit(gear);
+
+  if (rpm >= 5000){
+    displayManager->showPoint(true);
+  }else {
+    displayManager->showPoint(false);
   }
-  
+
 
   Serial.print("velocity: ");Serial.print(vel);Serial.print("\t");
   Serial.print("revolution: ");Serial.print(rpm);Serial.print("\t");
   Serial.print("gear: ");Serial.print(gear);Serial.println("\t");
 
   delay(1000);
-
 }
